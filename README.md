@@ -20,3 +20,9 @@ HTML/CSS: Para la estructura y el estilo de la interfaz de usuario.
 JavaScript: Para la lógica de la aplicación y la manipulación del DOM.
 Bootstrap: Para un diseño responsivo y componentes de interfaz de usuario.
 LocalStorage: Para el almacenamiento local de datos de listas de tareas y tareas.
+version escritorio
+![image](https://github.com/enzotorricella/To-do-list/assets/66220181/bcd2473f-17c6-46fd-9483-a0f758652a5b)
+
+version movil
+![23](https://github.com/enzotorricella/To-do-list/assets/66220181/321e37cd-756f-4538-b573-3e3f2af5ccdb)
+
