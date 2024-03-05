@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Lista de Tareas</h1>
+    <div class="input-group mb-3">
+        <input type="text" id="listNameInput" class="form-control" placeholder="Nombre de la lista">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="createListBtn">Crear Lista</button>
+        </div>
+    </div>
+    <select id="selectList" class="custom-select mb-3">
+        <!-- Aquí se agregarán las opciones de las listas creadas -->
+    </select>
+    <div class="input-group mb-3">
+        <input type="text" id="taskInput" class="form-control" placeholder="Agregar nueva tarea">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="addTaskBtn">Agregar</button>
+        </div>
+    </div>
+    <div id="taskLists" class="row">
+        <!-- Aquí se agregarán las listas de tareas -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const listNameInput = document.getElementById('listNameInput');
+    const createListBtn = document.getElementById('createListBtn');
+    const selectList = document.getElementById('selectList');
+    const taskInput = document.getElementById('taskInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskLists = document.getElementById('taskLists');
+
+    let lists = {}; // Objeto para almacenar las listas creadas
+
+    // Cargar datos desde el archivo JSON al inicializar la aplicación
+    loadListsFromJSON();
+
+    createListBtn.addEventListener('click', function () {
+        const listName = listNameInput.value.trim();
+        if (listName === '') {
+            return;
+        }
+
+        lists[listName] = []; // Agregar una nueva lista al objeto de listas
+        const option = document.createElement('option');
+        option.value = listName;
+        option.text = listName;
+        selectList.add(option);
+        listNameInput.value = '';
+        renderLists();
+        saveListsToJSON(); // Guardar datos en el archivo JSON después de crear una nueva lista
+    });
+
+    addTaskBtn.addEventListener('click', function () {
+        const selectedListName = selectList.value;
+        if (!selectedListName) {
+            alert('Seleccione una lista antes de agregar una tarea.');
+            return;
+        }
+
+        const taskText = taskInput.value.trim();
+        if (taskText === '') {
+            return;
+        }
+
+        const selectedList = lists[selectedListName];
+        selectedList.push({ text: taskText, completed: false }); // Agregar la tarea a la lista seleccionada
+        taskInput.value = '';
+        renderLists();
+        saveListsToJSON(); // Guardar datos en el archivo JSON después de agregar una tarea
+    });
+
+    function renderLists() {
+        taskLists.innerHTML = '';
+        Object.keys(lists).forEach(listName => {
+            const listGroup = document.createElement('div');
+            listGroup.classList.add('col-md-4', 'mb-4');
+            listGroup.innerHTML = `
+                <div class="card">
+                    <div class="card-header">${listName}</div>
+                    <ul class="list-group list-group-flush">
+                        ${lists[listName].map((task, index) => `
+                            <li class="list-group-item">
+                                <input type="checkbox" id="task_${index}" class="task-checkbox" ${task.completed ? 'checked' : ''} data-list="${listName}" data-index="${index}">
+                                <label for="task_${index}">${task.text}</label>
+                            </li>`).join('')}
+                    </ul>
+                    <div class="card-footer">
+                        <button class="btn btn-danger delete-list-btn" data-list="${listName}">
+                            <i class="fas fa-trash"></i> <!-- Icono de tacho de basura -->
+                        </button>
+                    </div>
+                </div>
+            `;
+            taskLists.appendChild(listGroup);
+        });
+        addCheckboxEventListeners();
+        addDeleteListEventListeners();
+    }
+
+    function addDeleteListEventListeners() {
+        const deleteListBtns = document.querySelectorAll('.delete-list-btn');
+        deleteListBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const listName = this.getAttribute('data-list');
+                delete lists[listName];
+                renderLists();
+                saveListsToJSON(); // Guardar datos en el archivo JSON después de eliminar una lista
+            });
+        });
+    }
+
+    function addCheckboxEventListeners() {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const listName = this.getAttribute('data-list');
+                const index = parseInt(this.getAttribute('data-index'));
+
+                if (this.checked) {
+                    // Eliminar tarea completada
+                    lists[listName].splice(index, 1);
+                } else {
+                    // Marcar tarea como completada
+                    lists[listName][index].completed = true;
+                }
+                renderLists();
+                saveListsToJSON(); // Guardar datos en el archivo JSON después de realizar cambios en las tareas
+            });
+        });
+    }
+
+    function saveListsToJSON() {
+        // Convertir el objeto de listas a formato JSON y guardarlo en un archivo JSON
+        const jsonString = JSON.stringify(lists);
+        // Guardar los datos en localStorage
+        localStorage.setItem('todoLists', jsonString);
+    }
+
+    function loadListsFromJSON() {
+        // Cargar los datos desde localStorage
+        const jsonString = localStorage.getItem('todoLists');
+        if (jsonString) {
+            // Convertir el JSON a un objeto JavaScript y asignarlo a la variable lists
+            lists = JSON.parse(jsonString);
+            renderLists();
+        }
+    }
+});
+
+</script>
+<style>
+body {
+  background-image: url('assets/wood-board-background.jpg');
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.transparent-background {
+  background-color: rgba(255, 255, 255, 0.41);
+}
+
+.delete-list-btn {
+    margin-left: auto; /* Para alinear el botón a la derecha */
+}
+</style>
+</body>
+</html>
+
