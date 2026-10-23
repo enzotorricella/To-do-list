@@ -1,29 +1,42 @@
-# To-do-list
-Este proyecto consiste en una aplicación web para gestionar y organizar listas de tareas (To-Do Lists). La aplicación permite a los usuarios crear múltiples listas de tareas, agregar tareas a cada lista, marcar tareas como completadas, eliminar tareas y eliminar listas completas.
+# Listas de tareas — JavaScript
 
+Aplicación frontend de demostración para organizar tareas en múltiples listas. Implementada con **HTML, JavaScript, Bootstrap 4 y localStorage**, sin servidor ni cuenta de usuario.
 
-## Funcionalidades Principales
+## Funciones
 
-- **Creación de Listas de Tareas:** Los usuarios pueden crear nuevas listas de tareas con un nombre descriptivo.
+- Crear listas con nombres únicos.
+- Seleccionar una lista y agregar tareas.
+- Marcar o desmarcar tareas como completadas **sin eliminarlas**.
+- Eliminar tareas individualmente y eliminar listas completas.
+- Conservar cambios en el almacenamiento local del navegador.
+- Mostrar los textos ingresados como texto, sin interpretarlos como HTML.
 
-- **Añadir Tareas:** Los usuarios pueden añadir nuevas tareas a cada lista con un título y una descripción opcional.
+## Ejecutar
 
-- **Marcar Tareas como Completadas:** Los usuarios pueden marcar las tareas como completadas cuando las hayan terminado.
+No hace falta instalar dependencias. Abrí `index.html` en el navegador o serví los archivos con:
 
-- **Eliminar Tareas:** Los usuarios pueden eliminar tareas individualmente de una lista.
+```bash
+python -m http.server 8000
+```
 
-- **Eliminar Listas Completas**: Los usuarios pueden eliminar listas completas de tareas cuando ya no las necesiten.
+Después abrí `http://localhost:8000`.
 
+## Pruebas manuales recomendadas
 
-## Tecnologías Utilizadas
-### HTML/CSS: Para la estructura y el estilo de la interfaz de usuario.
-### JavaScript: Para la lógica de la aplicación y la manipulación del DOM.
-### Bootstrap: Para un diseño responsivo y componentes de interfaz de usuario.
-### LocalStorage: Para el almacenamiento local de datos de listas de tareas y tareas.
+1. Crear dos listas y agregar tareas en ambas.
+2. Marcar y desmarcar una tarea; verificar que no desaparezca.
+3. Eliminar una tarea sin afectar las restantes.
+4. Recargar la página y verificar la persistencia de las listas.
+5. Intentar crear una lista duplicada.
+6. Ingresar texto como `<script>alert(1)</script>` y verificar que se muestre literalmente.
 
-**version escritorio**.
-![image](https://github.com/enzotorricella/To-do-list/assets/66220181/bcd2473f-17c6-46fd-9483-a0f758652a5b)
+## Limitaciones
 
-**version movil**.
-![23](https://github.com/enzotorricella/To-do-list/assets/66220181/321e37cd-756f-4538-b573-3e3f2af5ccdb)
+- Los datos permanecen únicamente en el navegador y origen usados; no existe sincronización entre dispositivos.
+- Borrar los datos del sitio puede eliminar las listas.
+- No tiene usuarios, autenticación ni backend.
+- Es un ejercicio frontend, no una aplicación de gestión multiusuario.
 
+## Portfolio
+
+Este repositorio demuestra manipulación del DOM, eventos, estado local, persistencia y tratamiento seguro de entradas. Para proyectos de software empresarial: [etorri.com.ar](https://etorri.com.ar/).
